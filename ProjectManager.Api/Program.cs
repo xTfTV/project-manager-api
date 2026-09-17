@@ -1,5 +1,6 @@
 
 using ProjectManager.Api.Configuration;
+using ProjectManager.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,9 @@ builder.Services.AddOpenApi();
 builder.Services.Configure<DatabaseOptions>(
     builder.Configuration.GetSection(DatabaseOptions.SectionName)
 );
+
+// Registering the DB Connection
+builder.Services.AddSingleton<DbConnectionFactory>();
 
 var app = builder.Build();
 
