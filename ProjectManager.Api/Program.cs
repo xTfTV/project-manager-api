@@ -8,7 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add the services to the container
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
 
 // Adding the DB Connection options
 builder.Services.Configure<DatabaseOptions>(
@@ -20,12 +19,19 @@ builder.Services.AddSingleton<DbConnectionFactory>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
+// Adding swagger
+builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 // Configuring the HTTP Request pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
