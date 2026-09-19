@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using ProjectManager.Api.Repositories;
+using ProjectManager.Api.Services;
 
 namespace ProjectManager.Api.Controllers;
 
@@ -7,17 +7,17 @@ namespace ProjectManager.Api.Controllers;
 [Route("v1/api/[controller]")]
 public class ProjectsController : ControllerBase
 {
-    private readonly IProjectRepository _projectRepository;
+    private readonly IProjectService _projectService;
 
-    public ProjectsController(IProjectRepository projectRepository)
+    public ProjectsController(IProjectService projectService)
     {
-        _projectRepository = projectRepository;
+        _projectService = projectService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int userId)
     {
-        var projects = await _projectRepository.GetAllAsync(userId);
+        var projects = await _projectService.GetAllProjectsAsync(userId);
 
         return Ok(projects);
     }

@@ -3,6 +3,7 @@ using ProjectManager.Api.Configuration;
 using ProjectManager.Api.Data;
 using ProjectManager.Api.Models;
 using ProjectManager.Api.Repositories;
+using ProjectManager.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,8 @@ builder.Services.Configure<DatabaseOptions>(
 builder.Services.AddSingleton<DbConnectionFactory>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 // Adding swagger
 builder.Services.AddControllers();
