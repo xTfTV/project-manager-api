@@ -4,5 +4,5 @@ namespace ProjectManager.Api.Repositories;
 
 public interface IProjectRepository
 {
-    Task<IEnumerable<Project>> GetAllAsync();
+    Task<IEnumerable<Project>> GetAllAsync(int createdByUserId);
 }

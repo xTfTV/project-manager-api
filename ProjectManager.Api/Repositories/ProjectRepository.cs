@@ -15,7 +15,7 @@ public class ProjectRepository : IProjectRepository
         _dbConnectionFactory = dbConnectionFactory;
     }
 
-    public async Task<IEnumerable<Project>> GetAllAsync()
+    public async Task<IEnumerable<Project>> GetAllAsync(int createdByUserId)
     {
         var projects = new List<Project>();
 
@@ -25,6 +25,8 @@ public class ProjectRepository : IProjectRepository
         await using var command = new MySqlCommand("SP_Project_GetAll", connection);
 
         command.CommandType = CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue("p_created_by_user_id", createdByUserId);
 
         await using var reader = await command.ExecuteReaderAsync();
 
