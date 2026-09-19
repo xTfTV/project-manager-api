@@ -22,6 +22,8 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 // Adding swagger
 builder.Services.AddControllers();
 
