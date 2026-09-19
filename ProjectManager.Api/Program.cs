@@ -1,6 +1,8 @@
 
 using ProjectManager.Api.Configuration;
 using ProjectManager.Api.Data;
+using ProjectManager.Api.Models;
+using ProjectManager.Api.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,8 @@ builder.Services.Configure<DatabaseOptions>(
 
 // Registering the DB Connection
 builder.Services.AddSingleton<DbConnectionFactory>();
+
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 var app = builder.Build();
 
