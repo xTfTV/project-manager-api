@@ -26,6 +26,10 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.Configure<JwtOption>(builder.Configuration.GetSection(JwtOption.SectionName));
+
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+
 // Adding swagger
 builder.Services.AddControllers();
 

@@ -1,3 +1,4 @@
+using System.Security.Principal;
 using ProjectManager.Api.DTOs;
 using ProjectManager.Api.Repositories;
 
@@ -6,10 +7,12 @@ namespace ProjectManager.Api.Services;
 public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IJwtTokenService _jwtTokenService;
 
-    public AuthService(IUserRepository userRepository)
+    public AuthService(IUserRepository userRepository, IJwtTokenService jwtTokenService)
     {
         _userRepository = userRepository;
+        _jwtTokenService = jwtTokenService;
     }
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request)
@@ -36,10 +39,13 @@ public class AuthService : IAuthService
             };
         }
 
+        var token = _jwtTokenService.GenerateToken(user);
+
         return new LoginResponse
         {
             Success = true,
-            Message = "Login successful"
+            Message = "Login successful",
+            Token = token
         };
     }
 }
