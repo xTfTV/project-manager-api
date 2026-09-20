@@ -1,4 +1,6 @@
-
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using ProjectManager.Api.Configuration;
 using ProjectManager.Api.Data;
 using ProjectManager.Api.Models;
@@ -36,7 +38,32 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configuring the JWT Token authentication
+var jwtOption = builder.Configuration.GetSection(JwtOption.SectionName).Get<JwtOption>();
+
+if (jwtOption == null)
+{
+    throw new InvalidOperationException("JWT Configuration missing from appsettings.json");
+}
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtOption.Issuer,
+        ValidAudience = jwtOption.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOption.Key))
+    };
+});
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
+
 
 // Configuring the HTTP Request pipeline
 if (app.Environment.IsDevelopment())
@@ -46,6 +73,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
