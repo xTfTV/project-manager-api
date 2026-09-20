@@ -4,6 +4,6 @@ namespace ProjectManager.Api.DTOs;
 
 public class LoginRequest
 {
-    public string? EmailAddress { get; set; }
-    public string? Password { get; set; }
+    public string EmailAddress { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
 }

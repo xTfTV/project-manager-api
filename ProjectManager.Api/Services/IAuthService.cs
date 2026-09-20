@@ -4,5 +4,5 @@ namespace ProjectManager.Api.Services;
 
 public interface IAuthService
 {
-    Task<LoginResponse> LoginAsync(LoginRequest request);
+    Task<AuthResult> LoginAsync(LoginRequest request);
 }

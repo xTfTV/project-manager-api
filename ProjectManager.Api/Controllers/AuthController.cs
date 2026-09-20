@@ -20,10 +20,19 @@ public class AuthController : ControllerBase
     {
         var result = await _authService.LoginAsync(request);
 
-        if (!result.Success)
+        if (!result.Response.Success || string.IsNullOrWhiteSpace(result.Token))
         {
             return Unauthorized(result);
         }
-        return Ok(result);
+
+        Response.Cookies.Append("access_token", result.Token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddHours(8)
+        });
+        
+        return Ok(result.Response);
     }
 }

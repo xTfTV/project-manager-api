@@ -1,4 +1,3 @@
-using System.Security.Principal;
 using ProjectManager.Api.DTOs;
 using ProjectManager.Api.Repositories;
 
@@ -15,16 +14,19 @@ public class AuthService : IAuthService
         _jwtTokenService = jwtTokenService;
     }
 
-    public async Task<LoginResponse> LoginAsync(LoginRequest request)
+    public async Task<AuthResult> LoginAsync(LoginRequest request)
     {
         var user = await _userRepository.GetByEmailAsync(request.EmailAddress);
 
         if (user == null)
         {
-            return new LoginResponse
+            return new AuthResult
             {
-                Success = false,
-                Message = "Invalid email or password"
+                Response = new LoginResponse
+                {
+                    Success = false,
+                    Message = "Invalid email or password"
+                }
             };
         }
 
@@ -32,19 +34,25 @@ public class AuthService : IAuthService
 
         if (!passwordValid)
         {
-            return new LoginResponse
+            return new AuthResult
             {
-                Success = false,
-                Message = "Password is incorrect"
+                Response = new LoginResponse
+                {
+                    Success = false,
+                    Message = "Password is incorrect"
+                }
             };
         }
 
         var token = _jwtTokenService.GenerateToken(user);
 
-        return new LoginResponse
+        return new AuthResult
         {
-            Success = true,
-            Message = "Login successful",
+            Response = new LoginResponse
+            {
+                Success = true,
+                Message = "Login successful"    
+            },
             Token = token
         };
     }
