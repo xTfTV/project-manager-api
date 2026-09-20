@@ -5,7 +5,7 @@ using ProjectManager.Api.Services;
 namespace ProjectManager.Api.Controllers;
 
 [ApiController]
-[Route("v1/api[controller]")]
+[Route("v1/api/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
