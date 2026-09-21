@@ -10,4 +10,6 @@ public interface IProjectRepository
     Task<int> CreateAsync(CreateProjectRequest request, int createdByUserId);
 
     Task<bool> UpdateAsync(int projectId, CreateProjectRequest request, int createdByUserId);
+
+    Task<bool> DeleteAsync(int projectId, int createdByUserId);
 }

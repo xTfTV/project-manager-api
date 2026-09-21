@@ -28,4 +28,9 @@ public class ProjectService : IProjectService
     {
         return await _projectRepository.UpdateAsync(projectId, request, createdByUserId);
     }
+
+    public async Task<bool> DeleteProjectAsync(int projectId, int createdByUserId)
+    {
+        return await _projectRepository.DeleteAsync(projectId, createdByUserId);
+    }
 }

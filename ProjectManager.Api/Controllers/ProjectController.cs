@@ -71,4 +71,24 @@ public class ProjectsController : ControllerBase
 
         return Ok(new { message = "Project updated successfully" });
     }
+
+    [HttpDelete("{projectId:int}")]
+    public async Task<IActionResult> Delete(int projectId)
+    {
+        var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdValue, out var userId))
+        {
+            return Unauthorized(new { message = "User ID claim is missing or invalid" });
+        }
+
+        var deleted = await _projectService.DeleteProjectAsync(projectId, userId);
+
+        if (!deleted)
+        {
+            return NotFound(new { message = "Project not found or you do not have permission to delete it." });
+        }
+
+        return Ok(new { message = "Project was deleted successfully" });
+    }
 }
