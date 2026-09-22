@@ -123,4 +123,22 @@ public class ProjectRepository : IProjectRepository
 
         return Convert.ToInt32(result) > 0;
     }
+
+    public async Task<bool> CompleteAsync(int projectId, int createdByUserId)
+    {
+        await using var connection = _dbConnectionFactory.CreateConnection();
+        await connection.OpenAsync();
+
+        await using var command = new MySqlCommand("SP_Project_Complete", connection);
+
+        command.CommandType = CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue("p_project_id", projectId);
+
+        command.Parameters.AddWithValue("p_created_by_user_id", createdByUserId);
+
+        var result = await command.ExecuteScalarAsync();
+
+        return Convert.ToInt32(result) > 0;
+    }
 }

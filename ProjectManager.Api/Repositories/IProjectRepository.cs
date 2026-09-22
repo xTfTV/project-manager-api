@@ -12,4 +12,6 @@ public interface IProjectRepository
     Task<bool> UpdateAsync(int projectId, CreateProjectRequest request, int createdByUserId);
 
     Task<bool> DeleteAsync(int projectId, int createdByUserId);
+
+    Task<bool> CompleteAsync(int projectId, int createdByUserId);
 }
