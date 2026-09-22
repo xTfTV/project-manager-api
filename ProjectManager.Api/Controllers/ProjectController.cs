@@ -91,4 +91,24 @@ public class ProjectsController : ControllerBase
 
         return Ok(new { message = "Project was deleted successfully" });
     }
+
+    [HttpPatch("{projectId:int}/complete")]
+    public async Task<IActionResult> Complete(int projectId)
+    {
+        var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdValue, out var userId))
+        {
+            return Unauthorized(new { message = "User ID claim is missing or invalid" });
+        }
+
+        var completed = await _projectService.CompleteProjectAsync(projectId, userId);
+
+        if (!completed)
+        {
+            return NotFound(new { message = "Project not found or you do not have permission to complete it" });
+        }
+
+        return Ok(new { message = "Project completed successfully" });
+    }
 }
