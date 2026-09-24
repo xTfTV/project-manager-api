@@ -141,4 +141,62 @@ public class ProjectRepository : IProjectRepository
 
         return Convert.ToInt32(result) > 0;
     }
+
+    public async Task<ProjectListResponse> GetByFilterAsync(ProjectQueryRequest request, int createdByUserId)
+    {
+        await using var connection = _dbConnectionFactory.CreateConnection();
+        await connection.OpenAsync();
+
+        await using var command = new MySqlCommand("SP_Project_GetByFilter", connection);
+
+        command.CommandType = CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue("p_created_by_user_id", createdByUserId);
+
+        command.Parameters.AddWithValue("p_priority_id", (object?)request.PriorityId ?? DBNull.Value);
+
+        command.Parameters.AddWithValue("p_project_status_id", (object?)request.ProjectStatusId ?? DBNull.Value);
+
+        command.Parameters.AddWithValue("p_page", request.Page);
+
+        command.Parameters.AddWithValue("p_page_size", request.PageSize);
+
+        var projects = new List<Project>();
+        var totalCount = 0;
+
+        await using var reader = await command.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            projects.Add(new Project
+            {
+                ProjectId = reader.GetInt32("project_id"),
+                ProjectName = reader.GetString("project_name"),
+                PriorityId = reader.GetInt32("priority_id"),
+                ProjectStatusId = reader.GetInt32("project_status_id"),
+                ProjectCreatedDate = reader.GetDateTime("project_created_date"),
+                ProjectDueDate = reader.IsDBNull(reader.GetOrdinal("project_due_date")) ? null : reader.GetDateTime("project_due_date"),
+                Comments = reader.IsDBNull(reader.GetOrdinal("comments"))? null : reader.GetString("comments"),
+                CreatedByUserId = reader.GetInt32("created_by_user_id"),
+                LogicalCancelValue = reader.GetInt32("logical_cancel_value"),
+                ProjectCompleteDate = reader.IsDBNull(reader.GetOrdinal("project_complete_date")) ? null : reader.GetDateTime("project_complete_date")
+            });
+        }
+
+        if (await reader.NextResultAsync() && await reader.ReadAsync())
+        {
+            totalCount = reader.GetInt32("total_count");
+        }
+
+        var totalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize);
+
+        return new ProjectListResponse
+        {
+            Projects = projects,
+            Page = request.Page,
+            PageSize = request.PageSize,
+            TotalCount = totalCount,
+            TotalPages = totalPages
+        };
+    }
 }

@@ -38,4 +38,9 @@ public class ProjectService : IProjectService
     {
         return await _projectRepository.CompleteAsync(projectId, createdByUserId);
     }
+
+    public async Task<ProjectListResponse> GetProjectsByFilterAsync(ProjectQueryRequest request, int createdByUserId)
+    {
+        return await _projectRepository.GetByFilterAsync(request, createdByUserId);
+    }
 }

@@ -111,4 +111,34 @@ public class ProjectsController : ControllerBase
 
         return Ok(new { message = "Project completed successfully" });
     }
+
+    [HttpGet("filter")]
+    public async Task<IActionResult> GetByFilter([FromQuery] ProjectQueryRequest request)
+    {
+        var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdValue, out var userId))
+        {
+            return Unauthorized(new { message = "User ID claim is missing or invalid." });
+        }
+
+        if (request.Page < 1)
+        {
+            return BadRequest(new { message = "Page must be greater than 0" });
+        }
+
+        if (request.PageSize < 1)
+        {
+            return BadRequest(new { message = "Page size must be greater than 0" });
+        }
+
+        if (request.ProjectStatusId.HasValue && request.ProjectStatusId is < 1 or > 3)
+        {
+            return BadRequest(new { message = "Project status must be 1, 2, or 3" });
+        }
+
+        var result = await _projectService.GetProjectsByFilterAsync(request, userId);
+
+        return Ok(result);
+    }
 }
