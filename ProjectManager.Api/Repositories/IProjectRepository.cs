@@ -14,4 +14,6 @@ public interface IProjectRepository
     Task<bool> DeleteAsync(int projectId, int createdByUserId);
 
     Task<bool> CompleteAsync(int projectId, int createdByUserId);
+
+    Task<ProjectListResponse> GetByFilterAsync(ProjectQueryRequest request, int createdByUserId);
 }
