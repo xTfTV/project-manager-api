@@ -33,6 +33,8 @@ builder.Services.Configure<JwtOption>(builder.Configuration.GetSection(JwtOption
 
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
+builder.Services.AddScoped<IProjectLookupRepository, ProjectLookupRepository>();
+
 // Adding swagger
 builder.Services.AddControllers();
 
