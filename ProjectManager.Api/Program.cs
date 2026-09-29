@@ -35,6 +35,8 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 builder.Services.AddScoped<IProjectLookupRepository, ProjectLookupRepository>();
 
+builder.Services.AddScoped<IProjectLookupService, ProjectLookupService>();
+
 // Adding swagger
 builder.Services.AddControllers();
 
